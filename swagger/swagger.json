@@ -1,0 +1,210 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Solar System API",
+    "version": "1.0.0",
+    "description": "API for managing planets in the solar system"
+  },
+  "paths": {
+    "/api/planets": {
+      "get": {
+        "summary": "Get all planets",
+        "tags": ["Planets"],
+        "responses": {
+          "200": {
+            "description": "List of planets",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { "$ref": "#/components/schemas/Planet" }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Create a new planet",
+        "tags": ["Planets"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/Planet" },
+              "example": {
+                "name": "Neptune",
+                "orderFromSun": 8,
+                "diameter": 49244,
+                "mass": "1.02 × 10^26 kg",
+                "hasRings": true,
+                "moonsCount": 14,
+                "atmosphere": ["hydrogen", "helium", "methane"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Planet created"
+          },
+          "400": {
+            "description": "Invalid input"
+          }
+        }
+      }
+    },
+    "/api/planets/{id}": {
+      "get": {
+        "summary": "Get a planet by ID",
+        "tags": ["Planets"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Planet found",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Planet" }
+              }
+            }
+          },
+          "404": {
+            "description": "Planet not found"
+          }
+        }
+      },
+      "put": {
+        "summary": "Update a planet by ID",
+        "tags": ["Planets"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": { "type": "string" },
+                  "orderFromSun": { "type": "integer" },
+                  "diameter": { "type": "number" },
+                  "mass": { "type": "string" },
+                  "hasRings": { "type": "boolean" },
+                  "moonsCount": { "type": "integer" },
+                  "atmosphere": {
+                    "type": "array",
+                    "items": { "type": "string" }
+                  }
+                }
+              },
+              "example": {
+                "name": "",
+                "diameter": "",
+                "mass": "",
+                "moonsCount": 20,
+                "hasRings": true
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Planet updated"
+          },
+          "400": {
+            "description": "Invalid input"
+          },
+          "404": {
+            "description": "Planet not found"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete a planet by ID",
+        "tags": ["Planets"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Planet deleted"
+          },
+          "404": {
+            "description": "Planet not found"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Planet": {
+        "type": "object",
+        "required": [
+          "name",
+          "orderFromSun",
+          "diameter",
+          "mass",
+          "hasRings",
+          "moonsCount",
+          "atmosphere"
+        ],
+        "properties": {
+          "_id": {
+            "type": "string",
+            "description": "MongoDB ObjectId"
+          },
+          "name": {
+            "type": "string",
+            "description": "Name of the planet"
+          },
+          "orderFromSun": {
+            "type": "integer",
+            "description": "Order of the planet from the sun"
+          },
+          "diameter": {
+            "type": "number",
+            "description": "Diameter of the planet in kilometers"
+          },
+          "mass": {
+            "type": "string",
+            "description": "Mass of the planet"
+          },
+          "hasRings": {
+            "type": "boolean",
+            "description": "Whether the planet has rings"
+          },
+          "moonsCount": {
+            "type": "integer",
+            "description": "Number of moons"
+          },
+          "atmosphere": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "List of gases in the atmosphere"
+          }
+        }
+      }
+    }
+  }
+}
