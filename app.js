@@ -6,6 +6,7 @@ import planetsRoutes from './routes/planets.js';
 import swaggerUi from 'swagger-ui-express';
 import fs from 'fs';
 const swaggerDocument = JSON.parse(fs.readFileSync('./swagger/swagger.json'));
+import indexRoutes from './routes/index.js'; 
 
 
 
@@ -17,10 +18,13 @@ const PORT = process.env.PORT || 3000;
 app.use(cors());
 app.use(express.json());
 
+
+
 // Swagger docs
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 // Routes
+app.use('/', indexRoutes);
 app.use('/api/planets', planetsRoutes);
 
 // MongoDB connection
