@@ -3,7 +3,7 @@
   "info": {
     "title": "Solar System API",
     "version": "1.0.0",
-    "description": "API for managing planets in the solar system"
+    "description": "API for managing planets and moons in the solar system"
   },
   "paths": {
     "/api/planets": {
@@ -111,9 +111,9 @@
                 }
               },
               "example": {
-                "name": "",
-                "diameter": "",
-                "mass": "",
+                "name": "Updated Planet",
+                "diameter": 50000,
+                "mass": "9.5 × 10^25 kg",
                 "moonsCount": 20,
                 "hasRings": true
               }
@@ -152,6 +152,141 @@
           }
         }
       }
+    },
+    "/api/moons": {
+      "get": {
+        "summary": "Get all moons",
+        "tags": ["Moons"],
+        "responses": {
+          "200": {
+            "description": "List of moons",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { "$ref": "#/components/schemas/Moon" }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Create a new moon",
+        "tags": ["Moons"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/Moon" },
+              "example": {
+                "name": "Europa",
+                "planet": "Jupiter",
+                "diameter": 3121.6,
+                "discoveredBy": "Galileo Galilei",
+                "discoveryYear": 1610,
+                "orbitalPeriod": 3.5,
+                "isTidallyLocked": true
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Moon created"
+          },
+          "400": {
+            "description": "Invalid input"
+          }
+        }
+      }
+    },
+    "/api/moons/{id}": {
+      "get": {
+        "summary": "Get moon by ID",
+        "tags": ["Moons"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Moon found",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Moon" }
+              }
+            }
+          },
+          "404": {
+            "description": "Moon not found"
+          }
+        }
+      },
+      "put": {
+        "summary": "Update a moon by ID",
+        "tags": ["Moons"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/Moon" },
+              "example": {
+                "name": "Europa",
+                "diameter": 3140,
+                "planet": "Jupiter",
+                "discoveredBy": "Galileo Galilei",
+                "discoveryYear": 1610,
+                "orbitalPeriod": 3.5,
+                "isTidallyLocked": true
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Moon updated"
+          },
+          "400": {
+            "description": "Invalid input"
+          },
+          "404": {
+            "description": "Moon not found"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete a moon by ID",
+        "tags": ["Moons"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Moon deleted"
+          },
+          "404": {
+            "description": "Moon not found"
+          }
+        }
+      }
     }
   },
   "components": {
@@ -172,37 +307,30 @@
             "type": "string",
             "description": "MongoDB ObjectId"
           },
-          "name": {
-            "type": "string",
-            "description": "Name of the planet"
-          },
-          "orderFromSun": {
-            "type": "integer",
-            "description": "Order of the planet from the sun"
-          },
-          "diameter": {
-            "type": "number",
-            "description": "Diameter of the planet in kilometers"
-          },
-          "mass": {
-            "type": "string",
-            "description": "Mass of the planet"
-          },
-          "hasRings": {
-            "type": "boolean",
-            "description": "Whether the planet has rings"
-          },
-          "moonsCount": {
-            "type": "integer",
-            "description": "Number of moons"
-          },
+          "name": { "type": "string" },
+          "orderFromSun": { "type": "integer" },
+          "diameter": { "type": "number" },
+          "mass": { "type": "string" },
+          "hasRings": { "type": "boolean" },
+          "moonsCount": { "type": "integer" },
           "atmosphere": {
             "type": "array",
-            "items": {
-              "type": "string"
-            },
-            "description": "List of gases in the atmosphere"
+            "items": { "type": "string" }
           }
+        }
+      },
+      "Moon": {
+        "type": "object",
+        "required": ["name", "planet", "diameter"],
+        "properties": {
+          "_id": { "type": "string" },
+          "name": { "type": "string" },
+          "planet": { "type": "string" },
+          "diameter": { "type": "number" },
+          "discoveredBy": { "type": "string" },
+          "discoveryYear": { "type": "integer" },
+          "orbitalPeriod": { "type": "number" },
+          "isTidallyLocked": { "type": "boolean" }
         }
       }
     }

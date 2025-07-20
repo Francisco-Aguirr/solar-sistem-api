@@ -7,6 +7,8 @@ import swaggerUi from 'swagger-ui-express';
 import fs from 'fs';
 const swaggerDocument = JSON.parse(fs.readFileSync('./swagger/swagger.json'));
 import indexRoutes from './routes/index.js'; 
+import moonsRoutes from './routes/moons.js';
+
 
 
 
@@ -26,6 +28,8 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 // Routes
 app.use('/', indexRoutes);
 app.use('/api/planets', planetsRoutes);
+app.use('/api/moons', moonsRoutes);
+
 
 // MongoDB connection
 mongoose.connect(`${process.env.MONGODB_URI}/${process.env.DB_NAME}`, {
