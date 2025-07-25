@@ -6,13 +6,15 @@ import {
   updatePlanet,
   deletePlanet
 } from '../controllers/planetsController.js';
+import { isAuthenticated } from '../middlewares/auth.js';
+
 
 const router = express.Router();
 
 router.get('/', getAllPlanets);
 router.get('/:id', getPlanetById);
-router.post('/', createPlanet);
-router.put('/:id', updatePlanet);
-router.delete('/:id', deletePlanet);
+router.post('/', isAuthenticated, createPlanet);
+router.put('/:id', isAuthenticated, updatePlanet);
+router.delete('/:id', isAuthenticated, deletePlanet);
 
 export default router;

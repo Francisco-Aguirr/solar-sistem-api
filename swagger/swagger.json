@@ -5,7 +5,178 @@
     "version": "1.0.0",
     "description": "API for managing planets and moons in the solar system"
   },
+  "servers": [
+    {
+      "url": "http://localhost:3000",
+      "description": "Local development server"
+    }
+  ],
+  "tags": [
+    {
+      "name": "Authentication",
+      "description": "User authentication endpoints"
+    },
+    {
+      "name": "Planets",
+      "description": "Operations with planets"
+    },
+    {
+      "name": "Moons",
+      "description": "Operations with moons"
+    }
+  ],
   "paths": {
+    "/auth/register": {
+      "post": {
+        "tags": ["Authentication"],
+        "summary": "Register a new user",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "type": "string",
+                    "format": "email"
+                  },
+                  "password": {
+                    "type": "string",
+                    "format": "password",
+                    "minLength": 6
+                  },
+                  "name": {
+                    "type": "string"
+                  }
+                },
+                "required": ["email", "password", "name"]
+              },
+              "example": {
+                "email": "user@example.com",
+                "password": "securepassword123",
+                "name": "John Doe"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "User created successfully"
+          },
+          "400": {
+            "description": "Invalid input or email already exists"
+          }
+        }
+      }
+    },
+    "/auth/login": {
+      "post": {
+        "tags": ["Authentication"],
+        "summary": "Login with email and password",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "type": "string",
+                    "format": "email"
+                  },
+                  "password": {
+                    "type": "string",
+                    "format": "password"
+                  }
+                },
+                "required": ["email", "password"]
+              },
+              "example": {
+                "email": "user@example.com",
+                "password": "securepassword123"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful login",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "token": {
+                      "type": "string",
+                      "description": "JWT token for authentication"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Invalid credentials"
+          }
+        }
+      }
+    },
+    "/auth/auth0": {
+      "get": {
+        "tags": ["Authentication"],
+        "summary": "Initiate Auth0 authentication",
+        "responses": {
+          "302": {
+            "description": "Redirect to Auth0 login page"
+          }
+        }
+      }
+    },
+    "/auth/auth0/callback": {
+      "get": {
+        "tags": ["Authentication"],
+        "summary": "Auth0 callback endpoint",
+        "responses": {
+          "302": {
+            "description": "Redirect after successful authentication"
+          }
+        }
+      }
+    },
+    "/auth/logout": {
+      "get": {
+        "tags": ["Authentication"],
+        "summary": "Logout current user",
+        "responses": {
+          "302": {
+            "description": "Redirect after logout"
+          }
+        }
+      }
+    },
+    "/auth/me": {
+      "get": {
+        "tags": ["Authentication"],
+        "summary": "Get current user information",
+        "security": [{"bearerAuth": []}],
+        "responses": {
+          "200": {
+            "description": "Current user data",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/User"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
     "/api/planets": {
       "get": {
         "summary": "Get all planets",
@@ -27,6 +198,7 @@
       "post": {
         "summary": "Create a new planet",
         "tags": ["Planets"],
+        "security": [{"bearerAuth": []}],
         "requestBody": {
           "required": true,
           "content": {
@@ -50,6 +222,9 @@
           },
           "400": {
             "description": "Invalid input"
+          },
+          "401": {
+            "description": "Unauthorized"
           }
         }
       }
@@ -83,6 +258,7 @@
       "put": {
         "summary": "Update a planet by ID",
         "tags": ["Planets"],
+        "security": [{"bearerAuth": []}],
         "parameters": [
           {
             "name": "id",
@@ -127,6 +303,9 @@
           "400": {
             "description": "Invalid input"
           },
+          "401": {
+            "description": "Unauthorized"
+          },
           "404": {
             "description": "Planet not found"
           }
@@ -135,6 +314,7 @@
       "delete": {
         "summary": "Delete a planet by ID",
         "tags": ["Planets"],
+        "security": [{"bearerAuth": []}],
         "parameters": [
           {
             "name": "id",
@@ -146,6 +326,9 @@
         "responses": {
           "200": {
             "description": "Planet deleted"
+          },
+          "401": {
+            "description": "Unauthorized"
           },
           "404": {
             "description": "Planet not found"
@@ -174,6 +357,7 @@
       "post": {
         "summary": "Create a new moon",
         "tags": ["Moons"],
+        "security": [{"bearerAuth": []}],
         "requestBody": {
           "required": true,
           "content": {
@@ -197,6 +381,9 @@
           },
           "400": {
             "description": "Invalid input"
+          },
+          "401": {
+            "description": "Unauthorized"
           }
         }
       }
@@ -230,6 +417,7 @@
       "put": {
         "summary": "Update a moon by ID",
         "tags": ["Moons"],
+        "security": [{"bearerAuth": []}],
         "parameters": [
           {
             "name": "id",
@@ -262,6 +450,9 @@
           "400": {
             "description": "Invalid input"
           },
+          "401": {
+            "description": "Unauthorized"
+          },
           "404": {
             "description": "Moon not found"
           }
@@ -270,6 +461,7 @@
       "delete": {
         "summary": "Delete a moon by ID",
         "tags": ["Moons"],
+        "security": [{"bearerAuth": []}],
         "parameters": [
           {
             "name": "id",
@@ -282,6 +474,9 @@
           "200": {
             "description": "Moon deleted"
           },
+          "401": {
+            "description": "Unauthorized"
+          },
           "404": {
             "description": "Moon not found"
           }
@@ -290,7 +485,35 @@
     }
   },
   "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT",
+        "description": "JWT Authorization header using the Bearer scheme. Example: \"Authorization: Bearer {token}\""
+      }
+    },
     "schemas": {
+      "User": {
+        "type": "object",
+        "properties": {
+          "_id": {
+            "type": "string",
+            "description": "MongoDB ObjectId"
+          },
+          "email": {
+            "type": "string",
+            "format": "email"
+          },
+          "name": {
+            "type": "string"
+          },
+          "authProvider": {
+            "type": "string",
+            "enum": ["local", "auth0"]
+          }
+        }
+      },
       "Planet": {
         "type": "object",
         "required": [
@@ -334,5 +557,10 @@
         }
       }
     }
-  }
+  },
+  "security": [
+    {
+      "bearerAuth": []
+    }
+  ]
 }
